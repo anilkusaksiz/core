@@ -12,6 +12,7 @@ import pytest
 from syrupy.assertion import SnapshotAssertion
 
 from homeassistant.components.button import DOMAIN as BUTTON_DOMAIN, SERVICE_PRESS
+from homeassistant.components.ecovacs.button import STATION_ENTITY_DESCRIPTIONS
 from homeassistant.components.ecovacs.const import DOMAIN
 from homeassistant.components.ecovacs.controller import EcovacsController
 from homeassistant.const import ATTR_ENTITY_ID, STATE_UNKNOWN, Platform
@@ -28,6 +29,18 @@ pytestmark = [
 def platforms() -> Platform | list[Platform]:
     """Platforms, which should be loaded during the test."""
     return Platform.BUTTON
+
+
+def test_wash_mop_station_action_supported() -> None:
+    """Test wash mop station action is exposed as a button."""
+    description = next(
+        description
+        for description in STATION_ENTITY_DESCRIPTIONS
+        if description.action is StationAction.WASH_MOP
+    )
+
+    assert description.key == "station_action_wash_mop"
+    assert description.translation_key == "station_action_wash_mop"
 
 
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
